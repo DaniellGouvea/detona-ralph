@@ -3,13 +3,15 @@ const state = {
         squares: document.querySelectorAll(".square"),
         enemy: document.querySelector(".enemy"),
         timeLeft: document.querySelector("#time-left"),
-        score: document.querySelector("#score")
+        score: document.querySelector("#score"),
+        lives: document.querySelector("#lives")
     },
     values:{
         gameVelocity: 1000,
         hitPosition: 0,
         result: 0,
         currentTime:60,
+        playerLives:3
     },
     actions:{
         timerId: setInterval(randomSquare, 1000), 
@@ -25,12 +27,13 @@ function countDown(){
         clearInterval(state.actions.countDownTimerId)
         clearInterval(state.actions.TimerId)
         alert("Game Over! O seu resultado foi: " + state.values.result)
+        location.reload()
     }
 }
 
 function playSound(audioName){
     let audio = new Audio(`src/audios/${audioName}.m4a`)
-    audio.volume = 0.03
+    audio.volume = 0.05
     audio.play()
 }
 
@@ -58,6 +61,17 @@ function addListenerHitBox(){
                 state.view.score.textContent = state.values.result
                 state.values.hitPosition = null
                 playSound("hit")
+          }else{
+            state.values.playerLives--
+            state.view.lives.textContent = state.values.playerLives +"x"
+            playSound("fail")
+            if(state.values.playerLives===0 && state.values.result != 1){
+                alert(`Suas Vidas acabaram!! Sua pontuação foi de ${state.values.result} pontos`)
+                location.reload()
+            }else if(state.values.playerLives ===0){
+                alert(`Suas Vidas acabaram!! Sua pontuação foi de ${state.values.result} ponto`)
+                location.reload()
+            }
           }
         
         })
